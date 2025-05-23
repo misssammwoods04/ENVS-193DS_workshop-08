@@ -19,7 +19,7 @@ In this workshop, we will answer the question: How do specific leaf area, water 
 
 **Water treatment** is a categorical variable (i.e. a *factor*) with 2 levels: drought stressed (DS) and well watered (WW).  
 
-**Species** is a categorical variable (again, a *factor*) with 6 levels.  
+**Species** is a categorical variable (again, a *factor*) with 7 levels.  
 
 | Species name                 | Species code | Common name        |
 |------------------------------|--------------|--------------------|
@@ -44,7 +44,15 @@ library(ggeffects) # getting model predictions
 library(MuMIn) # model selection
 
 # read in your data here
+drought_exp <- read_xlsx(
+  # write in file path to data excel file
+  here("data", "Valliere_etal_EcoApps_Data.xlsx"),
+  
+  # specify sheet I want to read in
+  sheet = "First Harvest"
 
+  
+)
 ```
 
 Storing some colors to use in visualizations, and setting a common `ggplot` theme for all plots:
@@ -71,11 +79,11 @@ theme_set(theme_bw())
 # 2. Clean data
 
 ```{r data-cleaning}
-# INSERT COMMENT HERE
+# creating a clean data frame
 drought_exp_clean <- drought_exp |> # INSERT COMMENT HERE
   # INSERT COMMENT HERE
   clean_names() |> 
-  # INSERT COMMENT HERE
+  # adding new column for scientific species name
   mutate(species_name = case_match(
     species,
     "ENCCAL" ~ "Encelia californica", # bush sunflower
@@ -86,7 +94,7 @@ drought_exp_clean <- drought_exp |> # INSERT COMMENT HERE
     "STIPUL" ~ "Stipa pulchra", # purple needlegrass
     "LOTSCO" ~ "Lotus scoparius" # deerweed
   )) |> 
-  # INSERT COMMENT HERE
+  # creating new column with full names for water treatment 
   mutate(water_treatment = case_match(
     water,
     "WW" ~ "Well watered",
@@ -102,7 +110,7 @@ drought_exp_clean <- drought_exp |> # INSERT COMMENT HERE
                                     "Stipa pulchra",
                                     "Eschscholzia californica",
                                     "Grindelia camporum")) |> 
-  # INSERT COMMENT HERE
+  # making sure that water_treatment is a factor and reordering levels
   mutate(water_treatment = as_factor(water_treatment),
          water_treatment = fct_relevel(water_treatment,
                                        "Drought stressed",
@@ -121,8 +129,8 @@ And displaying some rows from the data frame:
 
 ```{r showing-data-frame-rows}
 slice_sample(
-  drought_exp_clean, # INSERT COMMENT HERE
-  n = 10 # INSERT COMMENT HERE
+  drought_exp_clean, # data frame
+  n = 10 # # rows to dispay
 )
 ```
 
